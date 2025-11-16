@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>MRI Segmentation</title>
@@ -9,21 +10,27 @@
 </head>
 
 <body>
+    <nav class="top-nav shadow-sm p-2">
+        <div class="container d-flex justify-content-between align-items-center py-2">
+            <h6 class="site-title txt-color">MRI Segmentation</h6>
 
-<nav class="top-nav shadow-sm p-2">
-    <div class="container d-flex justify-content-between align-items-center py-2">
-        <h6 class="site-title txt-color">MRI Segmentation</h6>
-
-        <div class="d-flex align-items-center gap-3">
-            <a class="small-nav-link" href="#">About Us</a>
-            <a class="small-nav-link" href="#">GitHub</a>
+            <div class="d-flex align-items-center gap-3">
+                <a class="small-nav-link" href="#">About Us</a>
+                <a class="small-nav-link" href="#">GitHub</a>
+            </div>
         </div>
+    </nav>
+
+    <div class="content container mt-4">
+        <div class="tabs-wrapper d-flex justify-content-center mb-4">
+            <div class="figma-tabs-container">
+                <a href="{{ url_for('Uploads.render_uploads_page') }}"
+                    class="figma-tab {% if active=='uploads' %}active{% endif %}">Upload</a>
+                <a href="{{ url_for('Results.render_results_page') }}"
+                    class="figma-tab {% if active=='results' %}active{% endif %}">Results</a>
+            </div>
+        </div>
+        {% block content %}{% endblock %}
     </div>
-</nav>
-
-<div class="content container mt-4">
-    {% block content %}{% endblock %}
-</div>
-
 </body>
 </html>

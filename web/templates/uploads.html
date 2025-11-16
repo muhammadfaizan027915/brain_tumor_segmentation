@@ -2,58 +2,62 @@
 {% block content %}
 
 
-<div class="tabs-wrapper d-flex justify-content-center mb-4">
-    <div class="figma-tabs-container">
-        <a href="{{ url_for('Uploads.render_uploads_page') }}" class="figma-tab {% if active=='upload' %}active{% endif %}">Upload</a>
-        <a href="{{ url_for('Results.render_results_page') }}" class="figma-tab {% if active=='results' %}active{% endif %}">Results</a>
-    </div>
-</div>
-
 <div class="card main-card p-5 mx-auto upload-card">
 
     <h5 class="text-center mb-2 txt-color">Upload Your Scans</h5>
     <p class="text-center text-muted txt-size">Upload your MRI scans for tumor segmentation</p>
 
-    <div class="upload-box mx-auto" id="drop-area">
-        <i class="fa fa-upload upload-icon"></i>
+    <form method="post" action="{{ url_for('Uploads.upload_file') }}" enctype="multipart/form-data">
+        <div class="upload-box mx-auto" id="drop-area">
+            <i class="fa fa-upload upload-icon"></i>
 
-        <p class="choose-text">Choose file or drag and drop it here!</p>
-        <p class="meta-text">NIfTI, NII, PNG, JPG — max 600MB</p>
+            <p class="choose-text">Choose file or drag and drop it here!</p>
+            <p class="meta-text">NIfTI, NII, PNG, JPG — max 600MB</p>
 
-        <label class="browse-link">
-            Browse
-            <input type="file" name="file" id="file-input" hidden>
-        </label>
-    </div>
+            <label class="browse-link">
+                Browse
+                <input type="file" name="file" id="file-input" hidden>
+            </label>
+        </div>
 
-    <div class="row mt-4 preview-row justify-content-center" id="preview-row"></div>
+        <div class="row mt-4 preview-row justify-content-center" id="preview-row"></div>
 
-    <button class="submit-btn mt-4 mx-auto d-block upload-btn">Upload</button>
-
+        <button class="submit-btn mt-4 mx-auto d-block upload-btn" id="submit-scan" disabled>Upload</button>
+    </form>
 </div>
 
 <script>
-let fileInput = document.getElementById("file-input");
-let dropArea = document.getElementById("drop-area");
-let previewRow = document.getElementById("preview-row");
+    const fileInput = document.getElementById("file-input");
+    const dropArea = document.getElementById("drop-area");
+    const previewRow = document.getElementById("preview-row");
+    const submitBtn = document.getElementById("submit-scan")
 
-fileInput.addEventListener("change", e => showPreview(e.target.files[0]));
-dropArea.addEventListener("dragover", e => { e.preventDefault(); dropArea.classList.add("drag-hover"); });
-dropArea.addEventListener("dragleave", () => dropArea.classList.remove("drag-hover"));
-dropArea.addEventListener("drop", e => {
-    e.preventDefault();
-    dropArea.classList.remove("drag-hover");
-    showPreview(e.dataTransfer.files[0]);
-});
+    fileInput.addEventListener("change", e => {
+        const file = e.target.files[0]
 
-function showPreview(file) {
-    let url = URL.createObjectURL(file);
-    previewRow.innerHTML = `
+        if (file) {
+            showPreview(file)
+            submitBtn.removeAttribute("disabled")
+        }
+
+    });
+
+    dropArea.addEventListener("dragover", e => { e.preventDefault(); dropArea.classList.add("drag-hover"); });
+    dropArea.addEventListener("dragleave", () => dropArea.classList.remove("drag-hover"));
+    dropArea.addEventListener("drop", e => {
+        e.preventDefault();
+        dropArea.classList.remove("drag-hover");
+        showPreview(e.dataTransfer.files[0]);
+    });
+
+    function showPreview(file) {
+        let url = URL.createObjectURL(file);
+        previewRow.innerHTML = `
         <div class="col-md-4 text-center">
             <img src="${url}" class="preview-img">
             <p class="small mt-1">${file.name}</p>
         </div>`;
-}
+    }
 </script>
 
 {% endblock %}

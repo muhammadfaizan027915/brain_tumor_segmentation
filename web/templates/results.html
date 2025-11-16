@@ -1,23 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
 
-
-<div class="tabs-wrapper d-flex justify-content-center mb-4">
-    <div class="figma-tabs-container">
-
-        <a href="{{ url_for('Uploads.render_uploads_page') }}"
-            class="figma-tab {% if active=='upload' %}active{% endif %}">
-            Upload
-        </a>
-
-        <a href="{{ url_for('Results.render_results_page') }}"
-            class="figma-tab {% if active=='results' %}active{% endif %}">
-            Results
-        </a>
-
-    </div>
-</div>
-
 <div class="card main-card p-5 mx-auto upload-card">
 
     <h5 class="text-center mb-2 txt-color">Segmented Scans</h5>
