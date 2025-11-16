@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+<div class="tabs-wrapper d-flex justify-content-center mb-4">
+    <div class="figma-tabs-container">
+
+        <a href="{{ url_for('Uploads.render_uploads_page') }}"
+            class="figma-tab {% if active=='upload' %}active{% endif %}">
+            Upload
+        </a>
+
+        <a href="{{ url_for('Results.render_results_page') }}"
+            class="figma-tab {% if active=='results' %}active{% endif %}">
+            Results
+        </a>
+
+    </div>
+</div>
+
+<div class="card main-card p-5 mx-auto upload-card">
+
+    <h5 class="text-center mb-2 txt-color">Segmented Scans</h5>
+    <p class="text-center text-muted txt-size">These results assist radiologists in identifying tumor boundaries.</p>
+
+    <div class="row mt-4">
+        {% for img in results %}
+        <div class="col-md-4 mb-4 text-center">
+            <img src="{{ url_for('static', filename='results/' + img) }}" class="result-thumb">
+            <p class="small mt-2">{{ img }}</p>
+
+            <div class="d-flex justify-content-center gap-3">
+                <a href="#" class="link-small">View Image</a>
+                <a href="#" class="link-small">Download</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <button class="submit-btn mx-auto d-block mt-3" id="new-scans-btn">
+        Try with New Scans
+    </button>
+
+
+</div>
+
+<script>
+    const newScansBtn = document.getElementById("new-scans-btn")
+    newScansBtn.addEventListener("click", () => {
+        window.location.href = "{{url_for('Uploads.render_uploads_page')}}"
+    })
+</script>
+
+{% endblock %}
