@@ -6,5 +6,8 @@ UPLOAD_FOLDER = os.path.join(BASE_DIR, "static", "uploads")
 RESULT_FOLDER = os.path.join(BASE_DIR, "static", "results")
 MODEL_PATH = os.path.join(BASE_DIR, "model", "transunet_model.pth")
 
+MAX_FILE_SIZE = 200
+ALLOWED_FORMATS = [".nii", ".nii.gz"]
+
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(RESULT_FOLDER, exist_ok=True)

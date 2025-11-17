@@ -1,20 +1,34 @@
-from os import path
-from flask import render_template, Blueprint, request, redirect, url_for
-from config import UPLOAD_FOLDER
+from flask import Blueprint, request, redirect, url_for, render_template
+from core.repositories.session_repo import SessionRepo
+from core.repositories.mri_upload_repo import MriUploadRepo
+from core.handlers.mri_file_upload_handler import MRIFileUploadHandler
 
 uploads_bp = Blueprint("Uploads", __name__)
 
 @uploads_bp.route("/", methods=["GET"])
-def render_uploads_page():
+async def render_uploads_page():
     return render_template("uploads.html", active="uploads")
 
 @uploads_bp.route("/upload_file", methods=["POST"])
-def upload_file():
-    file = request.files["file"]
+async def upload_file():
+    file = request.files.get("file")
+    if not file:
+        return redirect(url_for("Uploads.render_uploads_page"))
+
+    file_handler = MRIFileUploadHandler()
     
-    filepath = path.join(UPLOAD_FOLDER, file.filename)
-    file.save(filepath)
-    
+    # 1️⃣ Initialize session
+    session = await SessionRepo.initialize_session()
+    session_id = session.id
+
+    # 2️⃣ Validate & store file
+    mri_file, errors = file_handler.validate_and_upload(file, session_id)
+    if errors:
+        print("Validation Errors:", errors)
+        return redirect(url_for("Uploads.render_uploads_page"))
+
+    # 3️⃣ Save upload record
+    await MriUploadRepo.create_mri_upload(session_id, mri_file)
+
+    # 4️⃣ Redirect to results
     return redirect(url_for("Results.render_results_page"))
-
-
