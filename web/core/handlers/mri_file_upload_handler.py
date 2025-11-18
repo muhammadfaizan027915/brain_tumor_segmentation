@@ -25,7 +25,7 @@ class MRIFileUploadHandler:
             return None, self.upload_issues
 
         mri_file_with_modality = validator.assign_modality(mri_file)
-        file_path = FileUploadHandler.store(session_id, mri_file_with_modality)
+        file_path = FileUploadHandler.store(mri_file_with_modality)
 
         mri_file_with_modality.set_filepath(file_path)
 

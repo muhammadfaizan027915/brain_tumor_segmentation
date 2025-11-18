@@ -9,7 +9,7 @@ class MriUploadRepo:
             data={
                 "filename": mri_file.name,
                 "filepath": mri_file.filepath,
-                "uesr_session_id": session_id
+                "user_session_id": session_id
             }
         )
 

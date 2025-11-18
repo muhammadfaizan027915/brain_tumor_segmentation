@@ -16,6 +16,8 @@ class MRIFileValidator:
     def validate(self, file: MRIFile) -> bool:
         is_valid_format = self.validate_format(file)
         is_valid_size = self.validate_file_size(file)
+
+        print("format=", file.format)
         
         if(not is_valid_format):
             self.errors.append(f"Unsupported file format: {file.format}")
@@ -23,7 +25,7 @@ class MRIFileValidator:
         if(not is_valid_size):
             self.errors.append(f"File size {file.size} exceeds the limit {self.max_file_size}")
         
-        return self.errors == 0
+        return len(self.errors) == 0
         
 
     def assign_modality(self, file: MRIFile) -> MRIFile:

@@ -20,9 +20,9 @@ model MriUpload {
   filename      String
   filepath      String
   uploaded_at    DateTime     @default(now())
-  uesr_session_id String?
+  user_session_id String?
   results       MriResult[]
-  user_session   UserSession? @relation(fields: [uesr_session_id], references: [id])
+  user_session   UserSession? @relation(fields: [user_session_id], references: [id])
 }
 
 model MriResult {
