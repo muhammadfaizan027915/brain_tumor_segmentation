@@ -7,7 +7,8 @@
     <h5 class="text-center mb-2 txt-color">Upload Your Scans</h5>
     <p class="text-center text-muted txt-size">Upload your MRI scans for tumor segmentation</p>
 
-    <form method="post" action="{{ url_for('Uploads.upload_file') }}" enctype="multipart/form-data">
+    <form method="post" action="{{ url_for('Uploads.upload_file') }}?session_id={{ session_id }}"
+        enctype="multipart/form-data">
         <div class="upload-box mx-auto" id="drop-area">
             <i class="fa fa-upload upload-icon"></i>
 
@@ -16,7 +17,7 @@
 
             <label class="browse-link">
                 Browse
-                <input type="file" name="file" id="file-input" hidden>
+                <input type="file" name="files" id="file-input" multiple hidden>
             </label>
         </div>
 
@@ -33,14 +34,14 @@
     const submitBtn = document.getElementById("submit-scan")
 
     fileInput.addEventListener("change", e => {
-        const file = e.target.files[0]
+        const files = e.target.files;
 
-        if (file) {
-            showPreview(file)
-            submitBtn.removeAttribute("disabled")
+        if (files.length > 0) {
+            handleFiles(files);
+            submitBtn.removeAttribute("disabled");
         }
-
     });
+
 
     dropArea.addEventListener("dragover", e => { e.preventDefault(); dropArea.classList.add("drag-hover"); });
     dropArea.addEventListener("dragleave", () => dropArea.classList.remove("drag-hover"));
@@ -50,13 +51,59 @@
         showPreview(e.dataTransfer.files[0]);
     });
 
+    function handleFiles(files) {
+        previewRow.innerHTML = "";
+
+        Array.from(files).forEach(file => {
+            showPreview(file);
+        });
+    }
+
+
     function showPreview(file) {
-        let url = URL.createObjectURL(file);
-        previewRow.innerHTML = `
-        <div class="col-md-4 text-center">
-            <img src="${url}" class="preview-img">
+        const fileName = file.name.toLowerCase();
+        const isImage = file.type.startsWith("image/");
+        const isNifti = fileName.endsWith(".nii") || fileName.endsWith(".nii.gz");
+
+        let previewHTML = `
+        <div class="col-md-4 text-center mb-2">
+    `;
+
+        if (isImage) {
+            const url = URL.createObjectURL(file);
+            previewHTML += `<img src="${url}" class="preview-img">`;
+        }
+
+        else if (isNifti) {
+            previewHTML += `
+            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16c0 
+                1.1.9 2 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <text x="7" y="17" font-size="8" font-family="monospace">NII</text>
+            </svg>
+        `;
+        }
+
+        else {
+            previewHTML += `
+            <svg width="60" height="60" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                 stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16c0 
+                1.1.9 2 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+            </svg>
+        `;
+        }
+
+        previewHTML += `
             <p class="small mt-1">${file.name}</p>
-        </div>`;
+        </div>
+    `;
+
+        previewRow.innerHTML += previewHTML;
     }
 </script>
 

@@ -27,10 +27,28 @@
                 <a href="{{ url_for('Uploads.render_uploads_page') }}"
                     class="figma-tab {% if active=='uploads' %}active{% endif %}">Upload</a>
                 <a href="{{ url_for('Results.render_results_page') }}"
-                    class="figma-tab {% if active=='results' %}active{% endif %}">Results</a>
+                    class="figma-tab {% if active=='results' %}active disabled no-click{% endif %}">Results</a>
             </div>
         </div>
+        {% if errors and errors|length > 0 %}
+        <div class="alert alert-danger" role="alert">
+            <ul class="mb-0">
+                {% for err in errors %}
+                <li>{{ err }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
         {% block content %}{% endblock %}
     </div>
 </body>
+
 </html>
+
+<script>
+    window.addEventListener("beforeunload", (event) => {
+        const data = JSON.stringify({ session_id: "{{ session_id }}" });
+        const blob = new Blob([data], { type: "application/json" });
+        navigator.sendBeacon("/end_session", blob);
+    });
+</script>

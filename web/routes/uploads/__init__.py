@@ -1,37 +1,89 @@
-from quart import Blueprint, request, redirect, url_for, render_template
 from core.repositories.session_repo import SessionRepo
 from core.repositories.mri_upload_repo import MriUploadRepo
 from core.handlers.mri_file_upload_handler import MRIFileUploadHandler
 
+from quart import Blueprint, request, redirect, url_for, render_template, jsonify
+from uuid import uuid4
+
 uploads_bp = Blueprint("Uploads", __name__)
 
+
+@uploads_bp.route("/", methods=["GET"])
 @uploads_bp.route("/", methods=["GET"])
 async def render_uploads_page():
-    return await render_template("uploads.html", active="uploads") 
+    session_id = request.args.get("session_id")
+    errors_param = request.args.get("errors")
+    errors = errors_param.split("|") if errors_param else []
+
+    session = None
+    if session_id:
+        session = await SessionRepo.get_session(session_id)
+
+    if not session:
+        session = await SessionRepo.initialize_session()
+        return redirect(
+            url_for(
+                "Uploads.render_uploads_page",
+                session_id=session.id,
+                errors=errors
+            )
+        )
+
+    return await render_template(
+        "uploads.html",
+        active="uploads",
+        session_id=session.id,
+        errors=errors
+    )
+
+
+@uploads_bp.route("/end_session", methods=["POST"])
+async def end_session():
+    data = await request.get_json()
+    session_id = data["session_id"]
+
+    await SessionRepo.end_session(session_id=session_id)
+    return jsonify({"status": "success"})
+
 
 @uploads_bp.route("/upload_file", methods=["POST"])
 async def upload_file():
-    file = await request.files
-    file_part = file.get("file")
+    session_id = request.args.get("session_id")
 
-    if not file_part:
+    files_request = await request.files
+    files = files_request.getlist("files")
+
+    if not files:
         return redirect(url_for("Uploads.render_uploads_page"))
 
+    upload_dir_id = uuid4().hex
     file_handler = MRIFileUploadHandler()
-    
-    # 1️⃣ Initialize session
-    session = await SessionRepo.initialize_session()
-    session_id = session.id
+    uploaded_records = []
 
-    # 2️⃣ Validate & store file
-    mri_file, errors = file_handler.validate_and_upload(file_part, session_id)
-    
-    if errors:
-        print("Validation Errors:", errors)
-        return redirect(url_for("Uploads.render_uploads_page"))
+    for file in files:
+        mri_file, errors = file_handler.validate_and_upload(
+            file=file,
+            session_id=session_id,
+            upload_dir_id=upload_dir_id
+        )
 
-    # 3️⃣ Save upload record
-    await MriUploadRepo.create_mri_upload(session_id, mri_file)
+        if errors:
+            print("Validation Errors:", errors)
+            return redirect(
+                url_for(
+                    "Uploads.render_uploads_page",
+                    session_id=session_id,
+                    errors="|".join(errors)
+                )
+            )
 
-    # 4️⃣ Redirect to results
-    return redirect(url_for("Results.render_results_page", session_id=session_id)) 
+        mri_uploaded = await MriUploadRepo.create_mri_upload(session_id, upload_dir_id, mri_file)
+        uploaded_records.append(mri_uploaded)
+
+    return redirect(
+        url_for(
+            "Results.render_results_page",
+            session_id=session_id,
+            upload_dir_id=upload_dir_id
+        )
+    )

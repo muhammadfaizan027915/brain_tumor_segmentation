@@ -13,22 +13,24 @@ model UserSession {
   startedat DateTime    @default(now())
   endedat   DateTime?
   uploads   MriUpload[]
+  results   MriResult[]
 }
 
 model MriUpload {
-  id            Int          @id @default(autoincrement())
-  filename      String
-  filepath      String
-  uploaded_at    DateTime     @default(now())
-  user_session_id String?
-  results       MriResult[]
-  user_session   UserSession? @relation(fields: [user_session_id], references: [id])
+  id              String       @id @default(uuid())
+  filename        String
+  filepath        String
+  uploaded_at     DateTime     @default(now())
+  user_session_id String
+  upload_dir_id   String
+  user_session    UserSession? @relation(fields: [user_session_id], references: [id])
 }
 
 model MriResult {
-  id         Int       @id @default(autoincrement())
-  upload_id   Int
-  output_path String
-  createdAt  DateTime  @default(now())
-  upload     MriUpload @relation(fields: [upload_id], references: [id])
+  id              String       @id @default(uuid())
+  output_path     String
+  created_at      DateTime     @default(now())
+  user_session_id String
+  upload_dir_id   String
+  user_session    UserSession? @relation(fields: [user_session_id], references: [id])
 }

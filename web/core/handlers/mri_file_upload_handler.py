@@ -3,13 +3,14 @@ from core.models.mri_file import MRIFile
 from core.services.mri_file_validator import MRIFileValidator
 from core.handlers.file_storage_handler import FileUploadHandler
 
+
 class MRIFileUploadHandler:
     def __init__(self):
         self.upload_issues = []
 
-    def validate_and_upload(self, file: BinaryIO, session_id: str):
+    def validate_and_upload(self, file: BinaryIO, session_id: str, upload_dir_id: str):
         file_content = file.read()
-        
+
         mri_file = MRIFile(
             name=file.filename,
             format=file.filename.split(".")[-1].lower(),
@@ -25,7 +26,11 @@ class MRIFileUploadHandler:
             return None, self.upload_issues
 
         mri_file_with_modality = validator.assign_modality(mri_file)
-        file_path = FileUploadHandler.store(mri_file_with_modality)
+        file_path = FileUploadHandler.store(
+            session_id=session_id,
+            upload_dir_id=upload_dir_id,
+            file=mri_file_with_modality
+        )
 
         mri_file_with_modality.set_filepath(file_path)
 

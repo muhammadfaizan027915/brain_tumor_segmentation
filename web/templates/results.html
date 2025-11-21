@@ -7,17 +7,16 @@
     <p class="text-center text-muted txt-size">These results assist radiologists in identifying tumor boundaries.</p>
 
     <div class="row mt-4">
-        {% for img in results %}
-        <div class="col-md-4 mb-4 text-center">
-            <img src="{{ url_for('static', filename='results/' + img) }}" class="result-thumb">
-            <p class="small mt-2">{{ img }}</p>
+        {% if result %}
+        <div class="mb-4 text-center">
+            <img src="{{ result.output_path }}" class="result-thumb">
 
             <div class="d-flex justify-content-center gap-3">
-                <a href="#" class="link-small">View Image</a>
-                <a href="#" class="link-small">Download</a>
+                <a href="{{ result.output_path }}" target="_blank" class="link-small">View Image</a>
+                <a href="{{ result.output_path }}" download="{{ result.output_path }}" class="link-small">Download</a>
             </div>
         </div>
-        {% endfor %}
+        {% endif %}
     </div>
 
     <button class="submit-btn mx-auto d-block mt-3" id="new-scans-btn">
