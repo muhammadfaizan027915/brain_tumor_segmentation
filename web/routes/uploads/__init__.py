@@ -9,7 +9,6 @@ uploads_bp = Blueprint("Uploads", __name__)
 
 
 @uploads_bp.route("/", methods=["GET"])
-@uploads_bp.route("/", methods=["GET"])
 async def render_uploads_page():
     session_id = request.args.get("session_id")
     errors_param = request.args.get("errors")
