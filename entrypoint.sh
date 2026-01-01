@@ -11,5 +11,5 @@ echo "Database is ready!"
 # Run Prisma migrations
 prisma migrate deploy
 
-# Start the application with Quart
-quart run --host 0.0.0.0 --port 5000
+# Start the application with hypercorn
+hypercorn app:app --bind 0.0.0.0:5000
