@@ -6,7 +6,7 @@ from transunet.configs import DataConfig, ModelConfig
 from transunet.inference import predict_case
 from transunet.model import TransUNet3D
 
-pathlib.PosixPath = pathlib.WindowsPath
+# pathlib.PosixPath = pathlib.WindowsPath
 
 
 class SegmentationPredictor:
