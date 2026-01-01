@@ -12,11 +12,11 @@ RUN apt-get update && apt-get install -y \
 
 # Install Python dependencies (WITHOUT torch)
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --timeout 600 -r requirements.txt
 
 # Install PyTorch from official index (CPU)
-RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu
-RUN pip install --no-cache-dir torchio==0.21.0
+RUN pip install --no-cache-dir --timeout 600 torch --index-url https://download.pytorch.org/whl/cpu
+RUN pip install --no-cache-dir --timeout 600 torchio==0.21.0
 
 COPY . .
 
@@ -24,8 +24,7 @@ COPY . .
 RUN prisma generate
 
 # Entrypoint script to wait for DB and run migrations
-COPY entrypoint.sh .
-RUN chmod +x entrypoint.sh
+RUN chmod +x entrypoint.sh cron.sh
 
 EXPOSE 5000
 

@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   web:
-    build: ./web
+    build: ./
     ports:
       - "5000:5000"
     depends_on:
@@ -12,6 +12,19 @@ services:
     volumes:
       - ./:/app
       - /app/__pycache__
+    entrypoint: ["./entrypoint.sh"]
+    restart: unless-stopped
+
+  worker:
+    build: ./
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql://user:password@db:5432/brain_tumor_db
+    volumes:
+      - ./:/app
+      - /app/__pycache__
+    entrypoint: ["./cron.sh"]
     restart: unless-stopped
 
   db:
