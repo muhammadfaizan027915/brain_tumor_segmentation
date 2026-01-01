@@ -1,6 +1,6 @@
 from quart import render_template, Blueprint, request, redirect, url_for
-from core.repositories.mri_result_repo import MriResultRepo
-from core.services.segmentation_predictor import SegmentationPredictor
+from core.repositories import MriResultRepo
+from core.services import SegmentationPredictor
 from config import UPLOAD_FOLDER, RESULT_FOLDER
 
 results_bp = Blueprint("Results", __name__)

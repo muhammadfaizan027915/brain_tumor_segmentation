@@ -9,9 +9,7 @@ sys.path.insert(0, PROJECT_ROOT)
 sys.path.insert(0, os.path.join(PROJECT_ROOT, 'web'))
 
 
-from core.repositories.session_repo import SessionRepo
-from core.repositories.mri_upload_repo import MriUploadRepo
-from core.repositories.mri_result_repo import MriResultRepo
+from core.repositories import SessionRepo, MriResultRepo, MriUploadRepo
 from utils.prisma_client import connect, disconnect
 from config import UPLOAD_FOLDER, RESULT_FOLDER
 
@@ -52,7 +50,7 @@ async def main():
 
         except Exception as e:
             print(f"⚠️  Failed to clean session {session_id}: {e}")
-            
+
     await disconnect()
     print("\nCleanup completed.")
 

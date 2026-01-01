@@ -1,4 +1,4 @@
-from core.models.mri_file import MRIFile
+from core.models import MRIFile
 from config import MAX_FILE_SIZE, ALLOWED_FORMATS
 
 

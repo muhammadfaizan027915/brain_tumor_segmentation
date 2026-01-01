@@ -1,5 +1,5 @@
 from utils.prisma_client import db
-from core.models.segmentation_result import SegmentationResult
+from core.models import SegmentationResult
 
 
 class MriResultRepo:

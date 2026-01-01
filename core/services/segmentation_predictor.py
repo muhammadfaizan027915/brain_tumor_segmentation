@@ -1,7 +1,7 @@
 import torch
 import pathlib
 from config import MODEL_PATH
-from core.models.segmentation_result import SegmentationResult
+from core.models import SegmentationResult
 from transunet.configs import DataConfig, ModelConfig
 from transunet.inference import predict_case
 from transunet.model import TransUNet3D

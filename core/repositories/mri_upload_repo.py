@@ -1,5 +1,5 @@
-from utils.prisma_client import db
-from core.models.mri_file import MRIFile
+from utils import db
+from core.models import MRIFile
 
 
 class MriUploadRepo:

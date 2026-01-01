@@ -1,6 +1,6 @@
-from core.repositories.session_repo import SessionRepo
-from core.repositories.mri_upload_repo import MriUploadRepo
-from core.handlers.mri_file_upload_handler import MRIFileUploadHandler
+from core.repositories import SessionRepo
+from core.repositories import MriUploadRepo
+from core.handlers import MRIFileUploadHandler
 
 from quart import Blueprint, request, redirect, url_for, render_template, jsonify
 from uuid import uuid4

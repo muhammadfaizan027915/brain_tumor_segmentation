@@ -1,7 +1,7 @@
 from typing import BinaryIO
-from core.models.mri_file import MRIFile
-from core.services.mri_file_validator import MRIFileValidator
-from core.handlers.file_storage_handler import FileUploadHandler
+from core.models import MRIFile
+from core.services import MRIFileValidator
+from core.handlers import FileUploadHandler
 
 
 class MRIFileUploadHandler:
